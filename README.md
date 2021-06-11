@@ -79,6 +79,8 @@ npm run migration
 
 You may utilize a third-party library, though it isn't required to do so.
 
+After you complete and submit your take home there will be a follow-up, in personal technical interview where you will present your PR. This is an informal and conversational style presentation where you can talk through your thoughts and we can ask you additional questions. We keep an extra 10 minutes open at the end for you to ask us questions about Flatfile, so have a list ready if you have unanswered questions.
+
 ### Requirements
 
 All commits and branches must follow the [conventional commit messages](https://www.conventionalcommits.org/en/v1.0.0/#summary) standard.
