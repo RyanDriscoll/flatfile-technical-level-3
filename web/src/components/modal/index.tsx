@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import CardI from '../../types/card'
 import { ModalBackground, ModalBody } from './styled-components'
@@ -7,20 +7,23 @@ const Modal = ({
   card,
   closeModal
 }: {
-  card: CardI
+  card: CardI | null
   closeModal: React.MouseEventHandler<HTMLInputElement>
 }) => {
-  const [title, setTitle] = useState<string>(card.title)
-  const [description, setDescription] = useState<string>(card.description || '')
+  const [cardData, setCardData] = useState({ title: '', description: '' })
 
-  const handleTitleChange = ({ target }: { target: HTMLInputElement }) => {
-    const { value } = target
-    setTitle(value)
-  }
+  useEffect(() => {
+    if (card) {
+      setCardData({
+        title: card.title || '',
+        description: card.description || ''
+      })
+    }
+  }, [card])
 
-  const handleDescriptionChange = ({ target }: { target: HTMLTextAreaElement }) => {
-    const { value } = target
-    setDescription(value)
+  const handleChange = ({ target }: { target: HTMLInputElement | HTMLTextAreaElement }) => {
+    const { value, name } = target
+    setCardData((prevData) => ({ ...prevData, [name]: value }))
   }
 
   const modalDiv = document.getElementById('modal')
@@ -29,32 +32,34 @@ const Modal = ({
   }
 
   return ReactDOM.createPortal(
-    <>
-      <ModalBackground onClick={closeModal}></ModalBackground>
-      <ModalBody>
-        <form>
-          <label htmlFor='title'>
-            Title
-            <input
-              type='text'
-              id='title'
-              name='title'
-              value={title}
-              onChange={handleTitleChange}
-            />
-          </label>
-          <label htmlFor='description'>
-            Description
-            <textarea
-              id='description'
-              name='description'
-              value={description}
-              onChange={handleDescriptionChange}
-            />
-          </label>
-        </form>
-      </ModalBody>
-    </>,
+    card ? (
+      <>
+        <ModalBackground onClick={closeModal}></ModalBackground>
+        <ModalBody>
+          <form name='update card'>
+            <label htmlFor='title'>
+              Title
+              <input
+                type='text'
+                id='title'
+                name='title'
+                value={cardData.title}
+                onChange={handleChange}
+              />
+            </label>
+            <label htmlFor='description'>
+              Description
+              <textarea
+                id='description'
+                name='description'
+                value={cardData.description}
+                onChange={handleChange}
+              />
+            </label>
+          </form>
+        </ModalBody>
+      </>
+    ) : null,
     modalDiv
   )
 }

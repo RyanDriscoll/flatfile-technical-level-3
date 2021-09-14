@@ -80,7 +80,7 @@ function App() {
           )
         })}
       </BoardContainer>
-      {selectedCard && <Modal card={selectedCard} closeModal={closeModal} />}
+      <Modal card={selectedCard} closeModal={closeModal} />
     </>
   )
 }
