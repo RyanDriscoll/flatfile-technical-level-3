@@ -38,18 +38,18 @@ function App() {
       url: 'http://localhost:3001/cards',
       data: { sectionId, title }
     }).then((response) => {
-      let sectionsClone: SectionI[] = [...sections]
-      for (let i = 0; i < sectionsClone.length; i++) {
-        let section: SectionI = sectionsClone[i]
-        if (section.id === sectionId) {
-          section.cards.push({
+      setSections((prevSections) => {
+        const sectionsClone: SectionI[] = [...prevSections]
+        const foundSection = sectionsClone.find((section) => section.id === sectionId)
+        if (foundSection) {
+          foundSection.cards.push({
             id: response.data.id,
             title: response.data.title,
             section_id: sectionId
           })
-          setSections(sectionsClone)
         }
-      }
+        return sectionsClone
+      })
     })
   }
 
