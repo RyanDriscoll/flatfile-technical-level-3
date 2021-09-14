@@ -56,7 +56,7 @@ function App() {
   return (
     <BoardContainer>
       {sections.map((section: SectionI) => {
-        return <Section section={section} onCardSubmit={onCardSubmit}></Section>
+        return <Section key={section.id} section={section} onCardSubmit={onCardSubmit}></Section>
       })}
     </BoardContainer>
   )
