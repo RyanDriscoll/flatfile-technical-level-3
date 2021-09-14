@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import CardI from '../../types/card'
 
 const CardContainer = styled.div`
   border-radius: 3px;
@@ -14,9 +15,9 @@ const CardContainer = styled.div`
 
 const CardTitle = styled.div``
 
-const Card = ({ card: { title } }: any) => (
-  <CardContainer className='card'>
-    <CardTitle>{title}</CardTitle>
+const Card = ({ onCardSelect, card }: { card: CardI; onCardSelect: Function }) => (
+  <CardContainer className='card' onClick={() => onCardSelect(card)}>
+    <CardTitle>{card.title}</CardTitle>
   </CardContainer>
 )
 
