@@ -33,7 +33,7 @@ function App() {
       const sortedSections = response.data.sort((a: SectionI, b: SectionI) => a.id - b.id)
       setSections(sortedSections)
     })
-  })
+  }, [])
 
   const onCardSubmit = (sectionId: number, title: string) => {
     axios({
@@ -80,7 +80,7 @@ function App() {
           )
         })}
       </BoardContainer>
-      <Modal card={selectedCard} closeModal={closeModal} />
+      <Modal card={selectedCard} sections={sections} closeModal={closeModal} onSubmit={() => {}} />
     </>
   )
 }
