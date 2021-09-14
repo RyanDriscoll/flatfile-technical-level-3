@@ -22,10 +22,12 @@ import CardI from '../../types/card'
 
 const Section = ({
   section: { id, title, cards },
-  onCardSubmit
+  onCardSubmit,
+  onCardSelect
 }: {
   section: SectionI
   onCardSubmit: Function
+  onCardSelect: Function
 }) => {
   const [isTempCardActive, setIsTempCardActive] = useState(false)
   const [cardText, setCardText] = useState('')
@@ -39,7 +41,7 @@ const Section = ({
         <CardsContainer>
           {cards.length &&
             cards.map((card: CardI) => {
-              return <Card key={card.id} card={card}></Card>
+              return <Card key={card.id} card={card} onCardSelect={onCardSelect}></Card>
             })}
         </CardsContainer>
         {isTempCardActive ? (
