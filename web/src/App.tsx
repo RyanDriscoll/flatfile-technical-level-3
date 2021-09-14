@@ -40,7 +40,7 @@ function App() {
     }).then((response) => {
       setSections((prevSections) => {
         const sectionsClone: SectionI[] = [...prevSections]
-        const foundSection = sectionsClone.find((section) => section.id === sectionId)
+        const foundSection: SectionI | undefined = sectionsClone.find((section) => section.id === sectionId)
         if (foundSection) {
           foundSection.cards.push({
             id: response.data.id,
