@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import ReactDOM from 'react-dom'
 import CardI from '../../types/card'
 import { ModalBackground, ModalBody } from './styled-components'
@@ -10,31 +10,28 @@ const Modal = ({
   card: CardI | null
   closeModal: React.MouseEventHandler<HTMLInputElement>
 }) => {
-  const [cardData, setCardData] = useState({ title: '', description: '' })
-
-  useEffect(() => {
-    if (card) {
-      setCardData({
-        title: card.title || '',
-        description: card.description || ''
-      })
-    }
-  }, [card])
+  const [cardData, setCardData] = useState({
+    title: card?.title || '',
+    description: card?.description || ''
+  })
 
   const handleChange = ({ target }: { target: HTMLInputElement | HTMLTextAreaElement }) => {
     const { value, name } = target
     setCardData((prevData) => ({ ...prevData, [name]: value }))
   }
 
-  const modalDiv = document.getElementById('modal')
+  let modalDiv = document.getElementById('modal')
+
   if (!modalDiv) {
-    return null
+    modalDiv = document.createElement('div')
+    modalDiv.setAttribute('id', 'modal')
+    document.body.appendChild(modalDiv)
   }
 
   return ReactDOM.createPortal(
     card ? (
       <>
-        <ModalBackground onClick={closeModal}></ModalBackground>
+        <ModalBackground data-testid='modal-background' onClick={closeModal} />
         <ModalBody>
           <form name='update card'>
             <label htmlFor='title'>
