@@ -6,6 +6,8 @@ import Section from './components/section'
 import SectionI from './types/section'
 
 import './App.css'
+import Modal from './components/modal'
+import CardI from './types/card'
 
 export const BoardContainer = styled.div`
   background-color: rgb(49, 121, 186);
@@ -23,6 +25,7 @@ export const BoardContainer = styled.div`
 
 function App() {
   const [sections, setSections] = useState<SectionI[]>([])
+  const [selectedCard, setSelectedCard] = useState<CardI | null>(null)
 
   useEffect(() => {
     axios.get('http://localhost:3001/sections').then((response) => {
@@ -40,7 +43,9 @@ function App() {
     }).then((response) => {
       setSections((prevSections) => {
         const sectionsClone: SectionI[] = [...prevSections]
-        const foundSection: SectionI | undefined = sectionsClone.find((section) => section.id === sectionId)
+        const foundSection: SectionI | undefined = sectionsClone.find(
+          (section) => section.id === sectionId
+        )
         if (foundSection) {
           foundSection.cards.push({
             id: response.data.id,
@@ -53,12 +58,30 @@ function App() {
     })
   }
 
+  const onCardSelect = (card: CardI) => {
+    setSelectedCard(card)
+  }
+
+  const closeModal = () => {
+    setSelectedCard(null)
+  }
+
   return (
-    <BoardContainer>
-      {sections.map((section: SectionI) => {
-        return <Section key={section.id} section={section} onCardSubmit={onCardSubmit}></Section>
-      })}
-    </BoardContainer>
+    <>
+      <BoardContainer>
+        {sections.map((section: SectionI) => {
+          return (
+            <Section
+              key={section.id}
+              section={section}
+              onCardSubmit={onCardSubmit}
+              onCardSelect={onCardSelect}
+            ></Section>
+          )
+        })}
+      </BoardContainer>
+      {selectedCard && <Modal card={selectedCard} closeModal={closeModal} />}
+    </>
   )
 }
 
