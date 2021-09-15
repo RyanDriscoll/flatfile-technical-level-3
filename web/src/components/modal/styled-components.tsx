@@ -37,6 +37,7 @@ export const ModalBody = styled.div`
 `
 export const ImageContainer = styled.div`
   display: flex;
+  justify-content: space-around;
 `
 
 export const Image = styled.div`
@@ -45,7 +46,7 @@ export const Image = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  margin: 10px;
+  margin: 10px 0;
 `
 
 export const ErrorMessage = styled.p`
