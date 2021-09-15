@@ -7,8 +7,8 @@ import { ModalBackground, ModalBody } from './styled-components'
 interface UpdateCardState {
   title: string
   description: string
-  section_id: number | null
-  id: number | null
+  sectionId: number | undefined
+  id: number | undefined
 }
 
 const Modal = ({
@@ -19,14 +19,14 @@ const Modal = ({
 }: {
   card: CardI | null
   sections: SectionI[] | null
-  closeModal: React.MouseEventHandler<HTMLInputElement>
+  closeModal: Function
   onSubmit: Function
 }) => {
   const [cardData, setCardData] = useState<UpdateCardState>({
     title: '',
     description: '',
-    section_id: null,
-    id: null
+    sectionId: undefined,
+    id: undefined
   })
 
   useEffect(() => {
@@ -34,8 +34,8 @@ const Modal = ({
       setCardData({
         title: card.title || '',
         description: card.description || '',
-        section_id: card.section_id || null,
-        id: card.id || null
+        sectionId: card.section_id || undefined,
+        id: card.id || undefined
       })
     }
   }, [card])
@@ -46,13 +46,13 @@ const Modal = ({
     target: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
   }) => {
     const { value, name } = target
-    setCardData((prevData) => ({ ...prevData, [name]: name === 'section_id' ? +value : value }))
+    setCardData((prevData) => ({ ...prevData, [name]: name === 'sectionId' ? +value : value }))
   }
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
     onSubmit(cardData)
-    console.log(cardData)
+    closeModal()
   }
 
   let modalDiv = document.getElementById('modal')
@@ -66,7 +66,7 @@ const Modal = ({
   return ReactDOM.createPortal(
     card ? (
       <>
-        <ModalBackground data-testid='modal-background' onClick={closeModal} />
+        <ModalBackground data-testid='modal-background' onClick={() => closeModal()} />
         <ModalBody>
           <form name='update card' onSubmit={handleSubmit}>
             <label htmlFor='title'>
@@ -88,9 +88,14 @@ const Modal = ({
                 onChange={handleChange}
               />
             </label>
-            <label htmlFor='section_id'>
+            <label htmlFor='sectionId'>
               Section
-              <select id='section_id' name='section_id' onChange={handleChange}>
+              <select
+                id='sectionId'
+                name='sectionId'
+                defaultValue={cardData.sectionId}
+                onChange={handleChange}
+              >
                 {sections &&
                   sections.map((section) => (
                     <option key={section.id} value={section.id}>
