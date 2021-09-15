@@ -11,6 +11,6 @@ export class SectionsService {
   ) {}
 
   findAll(): Promise<SectionEntity[]> {
-    return this.sectionsRepository.find({ relations: ['cards'] })
+    return this.sectionsRepository.find({ relations: ['cards', 'cards.images'] })
   }
 }
