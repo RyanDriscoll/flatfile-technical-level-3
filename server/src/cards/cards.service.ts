@@ -16,4 +16,22 @@ export class CardsService {
     card.section_id = sectionId
     return this.cardsRepository.save(card)
   }
+
+  async update({
+    id,
+    sectionId,
+    title,
+    description,
+  }: {
+    id: number
+    sectionId: number
+    title: string
+    description: string
+  }): Promise<CardEntity> {
+    const card = await this.cardsRepository.findOne({ where: { id } })
+    card.title = title
+    card.section_id = sectionId
+    card.description = description
+    return this.cardsRepository.save(card)
+  }
 }
