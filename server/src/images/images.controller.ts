@@ -8,6 +8,7 @@ export class ImagesController {
 
   @Get(':imgpath')
   getImage(@Param('imgpath') image, @Res() res) {
+    this.logger.log(`GET /images/${image.name}`)
     return res.sendFile(image, { root: './src/files' })
   }
 }
