@@ -29,6 +29,8 @@ const Modal = ({
     id: undefined
   })
 
+  const [uploadedFiles, setUploadedFiles] = useState<FileList | null>(null)
+
   useEffect(() => {
     if (card) {
       setCardData({
@@ -52,12 +54,13 @@ const Modal = ({
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
     const { files } = event.target as HTMLInputElement
-    console.log('🚀 ~ file: index.tsx ~ line 55 ~ handleImageChange ~ files', files)
+
+    setUploadedFiles(files)
   }
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
-    onSubmit(cardData)
+    onSubmit(cardData, uploadedFiles)
     closeModal()
   }
 
