@@ -14,6 +14,7 @@ export type MockType<T> = {
 export const repositoryMockFactory: () => MockType<Repository<jest.Mock>> = jest.fn(() => ({
   findOne: jest.fn((entity) => entity),
   save: jest.fn((entity) => entity),
+  findAndCount: jest.fn((entity) => [entity, 0]),
 }))
 
 describe('CardsController', () => {
