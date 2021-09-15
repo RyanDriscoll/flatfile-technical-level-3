@@ -49,6 +49,14 @@ const Modal = ({
         id: card.id
       })
       setExistingImages(card.images || [])
+    } else {
+      setCardData({
+        title: '',
+        description: '',
+        sectionId: undefined,
+        id: undefined
+      })
+      setExistingImages([])
     }
   }, [card])
 
@@ -118,7 +126,7 @@ const Modal = ({
               <select
                 id='sectionId'
                 name='sectionId'
-                defaultValue={cardData.sectionId}
+                defaultValue={card?.section_id}
                 onChange={handleChange}
               >
                 {sections &&
