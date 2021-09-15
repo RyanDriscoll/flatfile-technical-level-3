@@ -25,4 +25,9 @@ export class ImagesService {
     image.card_id = cardId
     return this.imagesRepository.save(image)
   }
+
+  async count(cardId: number): Promise<number> {
+    const [_, count] = await this.imagesRepository.findAndCount({ where: { card_id: cardId } })
+    return count
+  }
 }
