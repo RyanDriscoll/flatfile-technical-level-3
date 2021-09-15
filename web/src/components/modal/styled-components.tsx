@@ -35,3 +35,15 @@ export const ModalBody = styled.div`
     }
   }
 `
+export const ImageContainer = styled.div`
+  display: flex;
+`
+
+export const Image = styled.div`
+  width: 100px;
+  height: 100px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 10px;
+`
