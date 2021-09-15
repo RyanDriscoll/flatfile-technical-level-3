@@ -3,8 +3,8 @@ import { diskStorage } from 'multer'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { CardEntity } from '../entities/Card'
 import { CardsService } from './cards.service'
-import { editFileName, imageFileFilter } from 'src/utils/image-upload.utils'
-import { ImagesService } from 'src/images/images.service'
+import { editFileName, imageFileFilter } from '../utils/image-upload.utils'
+import { ImagesService } from '../images/images.service'
 
 @Controller('cards')
 export class CardsController {
