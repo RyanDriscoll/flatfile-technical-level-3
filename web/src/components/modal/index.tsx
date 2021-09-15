@@ -1,8 +1,9 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import CardI from '../../types/card'
+import ImageI from '../../types/image'
 import SectionI from '../../types/section'
-import { ModalBackground, ModalBody } from './styled-components'
+import { ModalBackground, ModalBody, Image, ImageContainer } from './styled-components'
 
 interface UpdateCardState {
   title: string
@@ -29,7 +30,8 @@ const Modal = ({
     id: undefined
   })
 
-  const [uploadedFiles, setUploadedFiles] = useState<FileList | null>(null)
+  const [uploadedImages, setUploadedImages] = useState<FileList | null>(null)
+  const [existingImages, setExistingImages] = useState<ImageI[]>([])
 
   useEffect(() => {
     if (card) {
@@ -39,6 +41,7 @@ const Modal = ({
         sectionId: card.section_id || undefined,
         id: card.id || undefined
       })
+      setExistingImages(card.images || [])
     }
   }, [card])
 
@@ -55,12 +58,12 @@ const Modal = ({
     event.preventDefault()
     const { files } = event.target as HTMLInputElement
 
-    setUploadedFiles(files)
+    setUploadedImages(files)
   }
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
-    onSubmit(cardData, uploadedFiles)
+    onSubmit(cardData, uploadedImages)
     closeModal()
   }
 
@@ -113,8 +116,14 @@ const Modal = ({
                   ))}
               </select>
             </label>
+            <label>Existing Images</label>
+            <ImageContainer>
+              {existingImages.map((image) => (
+                <Image key={image.id} style={{ backgroundImage: `url(${image.url})` }} />
+              ))}
+            </ImageContainer>
             <label htmlFor='images'>
-              Images
+              Upload New Images
               <input type='file' accept='image/*' onChange={handleImageChange} multiple />
             </label>
             <input type='submit' />
