@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import CardI from '../../types/card'
 import SectionI from '../../types/section'
@@ -47,6 +47,12 @@ const Modal = ({
   }) => {
     const { value, name } = target
     setCardData((prevData) => ({ ...prevData, [name]: name === 'sectionId' ? +value : value }))
+  }
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault()
+    const { files } = event.target as HTMLInputElement
+    console.log('🚀 ~ file: index.tsx ~ line 55 ~ handleImageChange ~ files', files)
   }
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
@@ -103,6 +109,10 @@ const Modal = ({
                     </option>
                   ))}
               </select>
+            </label>
+            <label htmlFor='images'>
+              Images
+              <input type='file' accept='image/*' onChange={handleImageChange} multiple />
             </label>
             <input type='submit' />
           </form>
