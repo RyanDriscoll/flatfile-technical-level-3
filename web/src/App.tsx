@@ -62,11 +62,21 @@ function App() {
     })
   }
 
-  const onCardUpdate = (card: CardI) => {
+  const onCardUpdate = (card: CardI, files: FileList) => {
+    const formData = new FormData()
+    Object.entries(card).forEach(([key, value]) => {
+      formData.append(key, value)
+    })
+    if (files) {
+      Array.from(files).forEach((file) => {
+        formData.append('file', file)
+      })
+    }
     axios({
       method: 'put',
       url: 'http://localhost:3001/cards',
-      data: card
+      headers: { 'content-type': 'multipart/form-data' },
+      data: formData
     }).then((response) => {
       return fetchSections()
     })
