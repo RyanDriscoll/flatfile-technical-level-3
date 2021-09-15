@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { MulterModule } from '@nestjs/platform-express'
 
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -10,6 +11,9 @@ import { CardEntity } from './entities/Card'
 import { CardsService } from './cards/cards.service'
 import { SectionEntity } from './entities/Section'
 import { SectionsService } from './sections/sections.service'
+import { ImageEntity } from './entities/Image'
+import { ImagesService } from './images/images.service'
+import { ImagesController } from './images/images.controller'
 
 @Module({
   imports: [
@@ -22,9 +26,12 @@ import { SectionsService } from './sections/sections.service'
       database: 'technical',
       autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([CardEntity, SectionEntity]),
+    TypeOrmModule.forFeature([CardEntity, SectionEntity, ImageEntity]),
+    MulterModule.register({
+      dest: './src/files',
+    }),
   ],
-  controllers: [AppController, SectionsController, CardsController],
-  providers: [AppService, CardsService, SectionsService],
+  controllers: [AppController, SectionsController, CardsController, ImagesController],
+  providers: [AppService, CardsService, SectionsService, ImagesService],
 })
 export class AppModule {}
