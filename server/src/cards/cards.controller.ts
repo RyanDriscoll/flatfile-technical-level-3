@@ -38,9 +38,8 @@ export class CardsController {
     if (files) {
       await Promise.all(
         files.map((file) => {
-          this.logger.log(file)
           const image = {
-            url: `http:/localhost:3001/images/${file.filename}`,
+            url: `http://localhost:3001/images/${file.filename}`,
             name: file.originalname,
             cardId: card.id,
           }
