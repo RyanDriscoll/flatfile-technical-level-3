@@ -27,12 +27,16 @@ function App() {
   const [sections, setSections] = useState<SectionI[]>([])
   const [selectedCard, setSelectedCard] = useState<CardI | null>(null)
 
-  useEffect(() => {
+  const fetchSections = () => {
     axios.get('http://localhost:3001/sections').then((response) => {
       // Section order is determined by ID so sort by ID
       const sortedSections = response.data.sort((a: SectionI, b: SectionI) => a.id - b.id)
       setSections(sortedSections)
     })
+  }
+
+  useEffect(() => {
+    fetchSections()
   }, [])
 
   const onCardSubmit = (sectionId: number, title: string) => {
@@ -58,6 +62,16 @@ function App() {
     })
   }
 
+  const onCardUpdate = (card: CardI) => {
+    axios({
+      method: 'put',
+      url: 'http://localhost:3001/cards',
+      data: card
+    }).then((response) => {
+      return fetchSections()
+    })
+  }
+
   const onCardSelect = (card: CardI) => {
     setSelectedCard(card)
   }
@@ -80,7 +94,12 @@ function App() {
           )
         })}
       </BoardContainer>
-      <Modal card={selectedCard} sections={sections} closeModal={closeModal} onSubmit={() => {}} />
+      <Modal
+        card={selectedCard}
+        sections={sections}
+        closeModal={closeModal}
+        onSubmit={onCardUpdate}
+      />
     </>
   )
 }
