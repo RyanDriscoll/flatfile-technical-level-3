@@ -3,7 +3,13 @@ import ReactDOM from 'react-dom'
 import CardI from '../../types/card'
 import ImageI from '../../types/image'
 import SectionI from '../../types/section'
-import { ModalBackground, ModalBody, Image, ImageContainer } from './styled-components'
+import {
+  ModalBackground,
+  ModalBody,
+  Image,
+  ImageContainer,
+  ErrorMessage
+} from './styled-components'
 
 interface UpdateCardState {
   title: string
@@ -32,6 +38,7 @@ const Modal = ({
 
   const [uploadedImages, setUploadedImages] = useState<FileList | null>(null)
   const [existingImages, setExistingImages] = useState<ImageI[]>([])
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     if (card) {
@@ -57,8 +64,12 @@ const Modal = ({
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
     const { files } = event.target as HTMLInputElement
-
-    setUploadedImages(files)
+    if (existingImages.length + (files?.length || 0) > 3) {
+      setErrorMessage('Maximum of three total images')
+    } else {
+      setErrorMessage('')
+      setUploadedImages(files)
+    }
   }
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
@@ -128,7 +139,8 @@ const Modal = ({
               Upload New Images
               <input type='file' accept='image/*' onChange={handleImageChange} multiple />
             </label>
-            <input type='submit' />
+            <input type='submit' disabled={Boolean(errorMessage)} />
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           </form>
         </ModalBody>
       </>

@@ -47,3 +47,8 @@ export const Image = styled.div`
   background-size: cover;
   margin: 10px;
 `
+
+export const ErrorMessage = styled.p`
+  color: red;
+  text-align: center;
+`
