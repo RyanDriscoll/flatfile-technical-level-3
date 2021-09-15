@@ -35,6 +35,12 @@ export class CardsController {
   ): Promise<CardEntity> {
     this.logger.log(`PUT /cards/${card.id}`)
 
+    const existingImageCount = await this.imagesService.count(card.id)
+
+    const remainingImagesAllowed = 3 - existingImageCount
+
+    files = files.slice(0, remainingImagesAllowed)
+
     if (files) {
       await Promise.all(
         files.map((file) => {
