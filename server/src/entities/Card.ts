@@ -9,6 +9,9 @@ export class CardEntity {
   @Column()
   title: string
 
+  @Column()
+  description: string
+
   @Column({ name: 'section_id' })
   section_id: number
 
