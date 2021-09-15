@@ -45,20 +45,7 @@ function App() {
       url: 'http://localhost:3001/cards',
       data: { sectionId, title }
     }).then((response) => {
-      setSections((prevSections) => {
-        const sectionsClone: SectionI[] = [...prevSections]
-        const foundSection: SectionI | undefined = sectionsClone.find(
-          (section) => section.id === sectionId
-        )
-        if (foundSection) {
-          foundSection.cards.push({
-            id: response.data.id,
-            title: response.data.title,
-            section_id: sectionId
-          })
-        }
-        return sectionsClone
-      })
+      return fetchSections()
     })
   }
 
