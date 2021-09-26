@@ -14,7 +14,7 @@ export type MockType<T> = {
 export const repositoryMockFactory: () => MockType<Repository<jest.Mock>> = jest.fn(() => ({
   findOne: jest.fn((entity) => entity),
   save: jest.fn((entity) => entity),
-  findAndCount: jest.fn((entity) => [entity, 0]),
+  findAndCount: jest.fn(() => [[], 0]),
 }))
 
 describe('CardsController', () => {
@@ -68,6 +68,15 @@ describe('CardsController', () => {
     jest.spyOn(service, 'update').mockImplementation(() => Promise.resolve(card))
     expect(
       await controller.updateCard({ id: 1, sectionId: 1, title: 'test', description: '' }, files)
-    ).toBe(card)
+    ).toEqual({
+      ...card,
+      images: [
+        {
+          card_id: 1,
+          name: 'coolImage.png',
+          url: 'http://localhost:3001/images/coolImage-1234.png',
+        },
+      ],
+    })
   })
 })
