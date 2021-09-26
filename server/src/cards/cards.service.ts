@@ -30,7 +30,7 @@ export class CardsService {
   }): Promise<CardEntity> {
     const card = await this.cardsRepository.findOne({ where: { id } })
     card.title = title
-    card.section_id = sectionId
+    card.section_id = Number(sectionId)
     card.description = description
     return this.cardsRepository.save(card)
   }

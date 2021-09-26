@@ -1,8 +1,11 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 
 import Modal from './'
 import SectionI from '../../types/section'
+import useData from '../../hooks/useData'
+
+jest.mock('../../hooks/useData')
 
 describe('<Modal />', () => {
   let mockedCard = {
@@ -15,9 +18,32 @@ describe('<Modal />', () => {
     { id: 2, title: 'section 2', cards: [] },
     { id: 3, title: 'section 3', cards: [] }
   ]
+  let mockedUseData = useData as jest.Mock
+  let mockOnCardUpdate = jest.fn()
+  let mockCloseModal = jest.fn()
+
+  beforeEach(() => {
+    mockedUseData.mockReturnValue({
+      selectedCard: mockedCard,
+      sections: mockedSections,
+      onCardUpdate: mockOnCardUpdate,
+      closeModal: mockCloseModal
+    })
+  })
+
+  afterEach(() => {
+    cleanup()
+    jest.resetAllMocks()
+  })
 
   it('does not render the modal if no card is present', async () => {
-    render(<Modal card={null} sections={null} closeModal={() => {}} onSubmit={() => {}} />)
+    mockedUseData.mockReturnValue({
+      selectedCard: null,
+      sections: mockedSections,
+      onCardUpdate: mockOnCardUpdate,
+      closeModal: mockCloseModal
+    })
+    render(<Modal />)
 
     const modal = screen.queryByRole('form')
 
@@ -25,7 +51,7 @@ describe('<Modal />', () => {
   })
 
   it('does render the modal if a card is present', async () => {
-    render(<Modal card={mockedCard} sections={null} closeModal={() => {}} onSubmit={() => {}} />)
+    render(<Modal />)
 
     const modal = screen.queryByRole('form')
 
@@ -33,14 +59,7 @@ describe('<Modal />', () => {
   })
 
   it('renders a select input if sections are present', async () => {
-    render(
-      <Modal
-        card={mockedCard}
-        sections={mockedSections}
-        closeModal={() => {}}
-        onSubmit={() => {}}
-      />
-    )
+    render(<Modal />)
 
     const combobox = screen.queryByRole('combobox')
     const options = screen.queryAllByRole('option')
@@ -50,10 +69,7 @@ describe('<Modal />', () => {
   })
 
   it('calls closeModal when the background is clicked', async () => {
-    const mockCloseModal = jest.fn()
-    render(
-      <Modal card={mockedCard} sections={null} closeModal={mockCloseModal} onSubmit={() => {}} />
-    )
+    render(<Modal />)
 
     const background = screen.getByTestId('modal-background')
 
@@ -62,16 +78,13 @@ describe('<Modal />', () => {
     expect(mockCloseModal).toHaveBeenCalledTimes(1)
   })
 
-  it('calls onSubmit when the form is submitted', async () => {
-    const mockOnSubmit = jest.fn()
-    render(
-      <Modal card={mockedCard} sections={null} closeModal={() => {}} onSubmit={mockOnSubmit} />
-    )
+  it('calls onCardUpdate when the form is submitted', async () => {
+    render(<Modal />)
 
     const submitButton = screen.getByRole('button')
 
     fireEvent.click(submitButton)
 
-    expect(mockOnSubmit).toHaveBeenCalledTimes(1)
+    expect(mockOnCardUpdate).toHaveBeenCalledTimes(1)
   })
 })
