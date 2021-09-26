@@ -1,8 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
-import CardI from '../../types/card'
+import useData from '../../hooks/useData'
 import ImageI from '../../types/image'
-import SectionI from '../../types/section'
 import {
   ModalBackground,
   ModalBody,
@@ -18,17 +17,7 @@ interface UpdateCardState {
   id: number | undefined
 }
 
-const Modal = ({
-  card,
-  sections,
-  closeModal,
-  onSubmit
-}: {
-  card: CardI | null
-  sections: SectionI[] | null
-  closeModal: Function
-  onSubmit: Function
-}) => {
+const Modal = () => {
   const [cardData, setCardData] = useState<UpdateCardState>({
     title: '',
     description: '',
@@ -39,6 +28,8 @@ const Modal = ({
   const [uploadedImages, setUploadedImages] = useState<FileList | null>(null)
   const [existingImages, setExistingImages] = useState<ImageI[]>([])
   const [errorMessage, setErrorMessage] = useState('')
+
+  const { selectedCard: card, onCardUpdate: onSubmit, sections, closeModal } = useData()
 
   useEffect(() => {
     if (card) {
