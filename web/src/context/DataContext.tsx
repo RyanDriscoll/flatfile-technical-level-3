@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, FC, useCallback } from 'react'
+import { createContext, useEffect, useState, FC } from 'react'
 import axios from 'axios'
 import SectionI from '../types/section'
 import CardI from '../types/card'
@@ -27,21 +27,17 @@ export const DataProvider: FC<React.ReactNode> = ({ children }) => {
   const [selectedCard, setSelectedCard] = useState<CardI | null>(null)
   const { toastError } = useError()
 
-  const fetchSections = useCallback(() => {
-    try {
-      axios.get('http://localhost:3001/sections').then((response) => {
-        // Section order is determined by ID so sort by ID
-        const sortedSections = response.data.sort((a: SectionI, b: SectionI) => a.id - b.id)
-        setSections(sortedSections)
-      })
-    } catch (error) {
-      toastError()
-    }
-  }, [toastError])
+  const fetchSections = async () => {
+    axios.get('http://localhost:3001/sections').then((response) => {
+      // Section order is determined by ID so sort by ID
+      const sortedSections = response.data.sort((a: SectionI, b: SectionI) => a.id - b.id)
+      setSections(sortedSections)
+    })
+  }
 
   useEffect(() => {
     fetchSections()
-  }, [fetchSections])
+  }, [])
 
   const onCardSubmit = async (sectionId: number, title: string) => {
     try {
@@ -50,6 +46,17 @@ export const DataProvider: FC<React.ReactNode> = ({ children }) => {
         url: 'http://localhost:3001/cards',
         data: { sectionId, title }
       })
+      if (response && response.data) {
+        const newCard = response.data
+        setSections((prevSections) => {
+          const sectionsClone = [...prevSections]
+          const foundSection = sectionsClone.find((s) => s.id === newCard.section_id)
+          if (foundSection) {
+            foundSection.cards = [...foundSection.cards, newCard]
+          }
+          return sectionsClone
+        })
+      }
     } catch (error) {
       toastError()
     }
@@ -66,12 +73,30 @@ export const DataProvider: FC<React.ReactNode> = ({ children }) => {
           formData.append('file', file)
         })
       }
-      const response = axios({
+      const response = await axios({
         method: 'put',
         url: 'http://localhost:3001/cards',
         headers: { 'content-type': 'multipart/form-data' },
         data: formData
       })
+      if (response && response.data) {
+        const newCard = response.data
+        setSections((prevSections) => {
+          const sectionsClone = [...prevSections]
+          const foundSection = sectionsClone.find((s) => s.id === newCard.section_id)
+          if (foundSection) {
+            const foundCardIndex = foundSection.cards.findIndex((c) => c.id === newCard.id)
+            if (foundCardIndex > -1) {
+              foundSection.cards = [
+                ...foundSection.cards.slice(0, foundCardIndex),
+                { ...foundSection.cards[foundCardIndex], ...newCard },
+                ...foundSection.cards.slice(foundCardIndex)
+              ]
+            }
+          }
+          return sectionsClone
+        })
+      }
     } catch (error) {
       toastError()
     }
