@@ -21,7 +21,7 @@ export class CardsController {
 
   @Put()
   @UseInterceptors(
-    FilesInterceptor('file', 20, {
+    FilesInterceptor('file', 3, {
       storage: diskStorage({
         destination: './src/files',
         filename: editFileName,
@@ -35,14 +35,15 @@ export class CardsController {
   ): Promise<CardEntity> {
     this.logger.log(`PUT /cards/${card.id}`)
 
-    const existingImageCount = await this.imagesService.count(card.id)
+    const [existingImages, existingImagesCount] = await this.imagesService.getAllForCard(card.id)
 
-    const remainingImagesAllowed = 3 - existingImageCount
+    const remainingImagesAllowed = 3 - existingImagesCount
 
     files = files.slice(0, remainingImagesAllowed)
 
-    if (files) {
-      await Promise.all(
+    const [cardResponse, images] = await Promise.all([
+      this.cardsService.update(card),
+      Promise.all(
         files.map((file) => {
           const image = {
             url: `http://localhost:3001/images/${file.filename}`,
@@ -52,9 +53,8 @@ export class CardsController {
 
           return this.imagesService.create(image)
         })
-      )
-    }
-
-    return this.cardsService.update(card)
+      ),
+    ])
+    return { ...cardResponse, images: [...existingImages, ...images] } as CardEntity
   }
 }
