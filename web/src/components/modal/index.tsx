@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import useData from '../../hooks/useData'
 import ImageI from '../../types/image'
@@ -18,6 +18,7 @@ interface UpdateCardState {
 }
 
 const Modal = () => {
+  const formRef = useRef<HTMLFormElement>(null)
   const [cardData, setCardData] = useState<UpdateCardState>({
     title: '',
     description: '',
@@ -73,9 +74,12 @@ const Modal = () => {
     }
   }
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
-    onSubmit(cardData, uploadedImages)
+    await onSubmit(cardData, uploadedImages)
+    if (formRef.current) {
+      formRef.current.reset()
+    }
     closeModal()
   }
 
@@ -92,7 +96,7 @@ const Modal = () => {
       <>
         <ModalBackground data-testid='modal-background' onClick={() => closeModal()} />
         <ModalBody>
-          <form name='update card' onSubmit={handleSubmit}>
+          <form ref={formRef} name='update card' onSubmit={handleSubmit}>
             <label htmlFor='title'>
               Title
               <input
