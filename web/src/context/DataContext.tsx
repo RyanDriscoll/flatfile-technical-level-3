@@ -90,8 +90,17 @@ export const DataProvider: FC<React.ReactNode> = ({ children }) => {
               foundSection.cards = [
                 ...foundSection.cards.slice(0, foundCardIndex),
                 { ...foundSection.cards[foundCardIndex], ...newCard },
-                ...foundSection.cards.slice(foundCardIndex)
+                ...foundSection.cards.slice(foundCardIndex + 1)
               ]
+            } else {
+              // card section changed
+              const formerSection = sectionsClone.find((s) =>
+                s.cards.find((c) => c.id === newCard.id)
+              )
+              if (formerSection) {
+                formerSection.cards = formerSection.cards.filter((c) => c.id !== newCard.id)
+              }
+              foundSection.cards = [...foundSection.cards, newCard]
             }
           }
           return sectionsClone
