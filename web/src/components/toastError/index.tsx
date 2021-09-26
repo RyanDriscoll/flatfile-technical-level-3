@@ -7,7 +7,7 @@ const ToastError = () => {
   return (
     <>
       {error && (
-        <ToastErrorContent>
+        <ToastErrorContent data-testid='error'>
           <p>{error}</p>
         </ToastErrorContent>
       )}
