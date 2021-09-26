@@ -40,6 +40,7 @@ const Modal = () => {
         id: card.id
       })
       setExistingImages(card.images || [])
+      setErrorMessage('')
     } else {
       setCardData({
         title: '',
@@ -48,6 +49,7 @@ const Modal = () => {
         id: undefined
       })
       setExistingImages([])
+      setErrorMessage('')
     }
   }, [card])
 
@@ -74,8 +76,6 @@ const Modal = () => {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
     onSubmit(cardData, uploadedImages)
-    setUploadedImages(null)
-    setExistingImages([])
     closeModal()
   }
 
