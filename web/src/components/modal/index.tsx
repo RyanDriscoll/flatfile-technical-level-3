@@ -42,15 +42,6 @@ const Modal = () => {
       })
       setExistingImages(card.images || [])
       setErrorMessage('')
-    } else {
-      setCardData({
-        title: '',
-        description: '',
-        sectionId: undefined,
-        id: undefined
-      })
-      setExistingImages([])
-      setErrorMessage('')
     }
   }, [card])
 
@@ -77,9 +68,21 @@ const Modal = () => {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
     await onSubmit(cardData, uploadedImages)
+    handleClose()
+  }
+
+  const handleClose = () => {
     if (formRef.current) {
       formRef.current.reset()
     }
+    setCardData({
+      title: '',
+      description: '',
+      sectionId: undefined,
+      id: undefined
+    })
+    setExistingImages([])
+    setErrorMessage('')
     closeModal()
   }
 
@@ -94,7 +97,7 @@ const Modal = () => {
   return ReactDOM.createPortal(
     card ? (
       <>
-        <ModalBackground data-testid='modal-background' onClick={() => closeModal()} />
+        <ModalBackground data-testid='modal-background' onClick={handleClose} />
         <ModalBody>
           <form ref={formRef} name='update card' onSubmit={handleSubmit}>
             <label htmlFor='title'>
